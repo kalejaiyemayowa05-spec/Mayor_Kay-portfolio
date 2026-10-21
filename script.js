@@ -39,14 +39,36 @@ year.textContent = new Date().getFullYear();
 const contactForm = document.getElementById("contactForm");
 const formMessage = document.getElementById("formMessage");
 
-contactForm.addEventListener("submit", function (event) {
+contactForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    formMessage.textContent =
-         "Thanks! Your message has been recieved.";
+    const formData = new FormData(contactForm);
 
-    contactForm.requestFullscreen();     
-});
+    try{
+        const response = await fetch(contactForm.action, {
+            method:"POST",
+            body: formData,
+            headers: {
+                "Accept": "application/json"
+            }
+        } );
+
+        if (response.ok) {
+            formMessage.textContent = 
+                "Thanks! Your message has been received.";
+
+                contactForm.reset();
+        } else {
+            formMessage.textContent = 
+                "oops! Something went wrong. Please try again.";
+        }
+
+    } catch (error) {
+        formMessage.textContent = 
+            "oops! Something went wrong. Please try again.";
+    }
+    
+})
 
 
 // =========================
